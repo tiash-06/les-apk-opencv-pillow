@@ -1,27 +1,22 @@
 from PIL import Image
 
-def roll(im: Image.Image, delta: int) -> Image.Image:
-    """Roll an image sideways."""
-    xsize, ysize = im.size
+def merge(im1: Image.Image, im2: Image.Image) -> Image.Image:
+    w = im1.size[0] + im2.size[0]
+    h = max(im1.size[1], im2.size[1])
+    im = Image.new("RGBA", (w, h))
 
-    delta = delta % xsize
-    if delta == 0:
-        return im
-
-    part1 = im.crop((0, 0, delta, ysize))
-    part2 = im.crop((delta, 0, xsize, ysize))
-    im.paste(part1, (xsize - delta, 0, xsize, ysize))
-    im.paste(part2, (0, 0, xsize - delta, ysize))
+    im.paste(im1)
+    im.paste(im2, (im1.size[0], 0))
 
     return im
 
 
 if __name__ == "__main__":
-    #commande manokatra an ilay sariko ao amn dossier pillow
-    with Image.open("TH.jpg") as im:
-        # manome an ilay decalage roll
-        resultat = roll(im, 100)
+    # Commande manokatra an'ilay sariko ao amin'ny dossier pillow
+    with Image.open("TH.jpg") as im1:
+        # Manao ny fusion (ampiarahina indroa ilay sary ho an'ny test)
+        resultat = merge(im1, im1)
         
         # Sauvegarde le résultat
-        resultat.save("TH_rolee.jpg")
-        print("Succès ! Image modifiée et sauvegardée sous 'TH_rolee.jpg'.")
+        resultat.convert("RGB").save("TH_fusion.jpg")
+        print("Succès ! Images fusionnées et sauvegardées sous 'TH_fusion.jpg'.")
